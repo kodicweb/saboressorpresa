@@ -1,0 +1,38 @@
+<?php
+
+class Model_producto extends CI_Model
+{
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	}	
+
+	public function Guardar($data){
+		$this->db->insert('producto', $data);
+		if ($this->db->affected_rows() > 0) {
+			return $this->db->insert_id();;
+		} else {
+			return false;
+		}
+	}
+
+	public function EditarProducto($idproducto, $data){
+		$this->db->where('ProductoId', $idproducto);
+		$this->db->update('producto', $data);
+		if ($this->db->affected_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function ListarProducto(){
+		$this->db->select('producto.ProductoId, producto.Nombre as nombreproducto, producto.Marca, producto.PorcentajeGanancia,producto.FechaVencimiento, tipoproducto.Nombre as nombreTipoProducto, tipoproducto.TipoProductoId as idTipoProducto, producto.estado');
+		$this->db->from('producto producto');
+		$this->db->join('tipoproducto tipoproducto', 'producto.TipoProductoid = tipoproducto.TipoProductoId');
+		$this->db->where('tipoproducto.eliminado', 0);
+		$datos = $this->db->get();
+		return $datos->result();
+	}
+}

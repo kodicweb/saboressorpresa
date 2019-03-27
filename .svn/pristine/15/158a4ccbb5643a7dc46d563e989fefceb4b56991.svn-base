@@ -1,0 +1,34 @@
+var rutaUniversal = baseurl;
+
+function guardar() {
+    var empleado = $("#nombre").val();
+    var identificacion = $("#identificacion").val();
+    var email = $("#email").val();
+    var direccion = $("#direccion").val();
+    var telefono = $("#telefono").val();
+    var username = $("#username").val();
+    var password = $("#password").val();
+
+    $.ajax({
+        url: rutaUniversal + 'Cuser/guardar',
+        type: 'POST',
+        data: $("#registroUsuarios").serialize(),
+        success: function (data) {
+            if (data == 1) {
+                // swal('Bienvenido')
+                alert("Se registro con exito el usuario!");
+                $("#nombre").val('');
+                $("#identificacion").val('');
+                $("#email").val('');
+                $("#direccion").val('');
+                $("#telefono").val('');
+                ("#username").val('');
+                $("#password").val('');
+
+            } else {
+                //swal('Error!', 'Usuario o contraseña incorrecta, ingrese nuevamente sus credenciales', 'error')
+                alert('Error al guardar el usuario');
+            }
+        }
+    })
+}

@@ -1,0 +1,36 @@
+var rutaUniversal = baseurl;
+
+function ListarMenu(){
+
+    $.ajax({
+        // url:'http://localhost/SaboresSorpresa/menu_controllers/ListarMenus',
+        url: rutaUniversal + 'menu_controllers/ListarMenus',
+        type:'POST',
+        cache:false,
+        success:function(data){
+            var items = JSON.parse(data)
+            $.each(items, function(i, item){
+                $("#menu").append(
+                    '<li>'+
+                    '<a onclick="cargarPagina(\'' + item.carpeta + '\',\'' + item.ruta + '\')" style="cursor:pointer;"><i class="zmdi zmdi-'+ item.icono +'"></i> '+ item.Nombre +'</a>'+
+                    '</li>'
+                )
+            })
+        }
+    });
+
+}
+ListarMenu();
+
+function cargarPagina(carpeta, ruta) {
+    $.ajax({
+		url: rutaUniversal + 'Principal/CargarPagina/' + carpeta + '/' + ruta,
+		type: 'POST',
+		success: function(data) {
+			//$("#dialog").remove();
+            //$("#img-cargando").css('display', 'none')
+			$("#contenido").html(data)
+			
+		}
+	})
+}

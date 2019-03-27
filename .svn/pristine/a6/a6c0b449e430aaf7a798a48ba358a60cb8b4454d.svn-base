@@ -1,0 +1,20 @@
+<?php
+
+class Model_cliente extends CI_Model
+{
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	}	
+
+	public function guardar($data){
+		$this->db->insert('cliente', $data);
+		if ($this->db->affected_rows() > 0) {
+			return $this->db->insert_id();;
+		} else {
+			return false;
+		}
+	}
+
+}

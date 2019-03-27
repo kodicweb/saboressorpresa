@@ -1,0 +1,21 @@
+<?php
+
+class Model_menu extends CI_Model
+{
+    function __construct(){
+        parent::__construct();
+        $this->load->database();
+    }
+
+    # Query para traer menus asignados
+    public function ListarMenus($siglacargo){
+        $this->db->select('menu.Nombre, menu.MenuId, menu.carpeta, menu.ruta');
+        $this->db->from('menu menu');
+        $this->db->join('asignarusuariomenu asgmenu','menu.MenuId = asgmenu.menuId');
+        $this->db->join('usuario usuario','usuario.UsuarioId = asgmenu.usuarioId');
+        $this->db->join('cargo cargo','cargo.cargoId = usuario.cargoId');
+        $this->db->where('cargo.Sigla', $siglacargo);
+        $datos = $this->db->get();
+        return $datos->result();
+    }
+}

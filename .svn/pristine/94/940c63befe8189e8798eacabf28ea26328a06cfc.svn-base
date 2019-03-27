@@ -1,0 +1,78 @@
+<?php
+
+class Model_receta extends CI_Model
+{
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	}
+
+	public function listarComboTipoReceta(){
+		$this->db->select('TipoRecetaId, Nombre as nombreTipoReceta');
+		$this->db->from('tiporeceta');
+		$this->db->where('eliminado', 0);
+		$datos = $this->db->get();
+		return $datos->result();
+	}
+
+	public function listarComboProducto(){
+		$this->db->select('ProductoId, Nombre as nombreProducto');
+		$this->db->from('producto');
+		$this->db->where('estado', 0);
+		$datos = $this->db->get();
+		return $datos->result();
+	}
+
+	public function ListarReceta(){
+		$this->db->select('receta.RecetaId, receta.Nombre as nombreReceta, receta.Descripcion, receta.estado, tiporeceta.Nombre as TipoReceta, tiporeceta.TipoRecetaId, ingredientes.IngredienteId, ingredientes.ProductoId, ingredientes.Cantidad, ingredientes.CostoPorcion, ingredientes.CostoPreparacion');
+		$this->db->from('receta');
+		$this->db->join('tiporeceta', 'receta.TipoRecetaId = tiporeceta.TipoRecetaId');
+		$this->db->join('ingredientes', 'receta.RecetaId = ingredientes.RecetaId');
+		$this->db->where('receta.estado', 0);
+		$datos = $this->db->get();
+		return $datos->result();
+	}
+
+	public function registrarReceta($data)
+    {
+        $this->db->insert('receta', $data);
+		if ($this->db->affected_rows() > 0) {
+			return $this->db->insert_id();
+		} else {
+			return false;
+		}
+    }
+
+    public function registrarIngrediente($data)
+    {
+        $this->db->insert('ingredientes', $data);
+		if ($this->db->affected_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public function editarReceta($RecetaId, $data){
+		$this->db->where('RecetaId', $RecetaId);
+		$this->db->update('receta', $data);
+		if ($this->db->affected_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function editarIngrediente($IngredienteId, $data){
+		$this->db->where('IngredienteId', $IngredienteId);
+		$this->db->update('ingredientes', $data);
+		if ($this->db->affected_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
+}

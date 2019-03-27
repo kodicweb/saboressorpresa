@@ -1,0 +1,103 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Unidadmedidad_controllers extends CI_Controller
+{
+	function __Construct()
+	{
+		parent::__Construct();
+		$this->load->Model('Model_menu');
+		$this->load->Model('Model_unidadmedida');
+	}
+
+	public function listarComboUnidadmedida()
+	{
+		$data = $this->Model_unidadmedida->listarComboUnidadmedida();
+		echo json_encode($data);
+	}
+
+	public function listarUnidadmedida()
+	{
+		$data = $this->Model_unidadmedida->listarUnidadmedida();
+		echo json_encode($data);
+	}
+
+	public function Guardar(){
+		if ($this->input->is_ajax_request()) {
+			$NombreMedida = $this->input->post('NombreMedida');
+			$sigla 	= $this->input->post('sigla');
+			$mensaje = '';
+
+			$data = array(
+				'Nombre' => $NombreMedida,
+				'Sigla' => $sigla,
+			);
+
+			if($this->Model_unidadmedida->guardar($data)){
+			
+				$mensaje = 1;
+			} else{
+				$mensaje = 2;
+			}
+
+			echo $mensaje;
+		}
+	}
+
+	public function Editar(){
+		if ($this->input->is_ajax_request()) {
+			$NombreMedida 		= $this->input->post('NombreMedida');
+			$sigla 				= $this->input->post('sigla');
+			$UnidadId			= $this->input->post('UnidadId');
+			$mensaje = '';
+
+			$data = array(
+				'Nombre' => $NombreMedida,
+				'Sigla' => $sigla
+			);
+
+			if($this->Model_unidadmedida->Editar($UnidadId, $data) == true){
+				$mensaje = 1;
+			} else {
+				$mensaje = 2;
+			}
+			echo $mensaje;
+		}
+	}
+
+	public function Deshabilitar(){
+		if ($this->input->is_ajax_request()) {
+			$UnidadId = $this->input->post('unidadId');
+			$mensaje = '';
+
+			$data = array('eliminado' => 1 );
+
+			if ($this->Model_unidadmedida->Editar($UnidadId, $data) == true) {
+				$mensaje = 1;
+			} else {
+				$mensaje = 2;
+			}
+
+			echo $mensaje;
+
+		}
+	}
+
+	public function Habilitar()
+	{
+		if ($this->input->is_ajax_request()) {
+			$UnidadId = $this->input->post('unidadId');
+			$mensaje = '';
+
+			$data = array('eliminado' => 0);
+			if ($this->Model_unidadmedida->Editar($UnidadId, $data) == true) {
+				$mensaje = 1;
+			} else {
+				$mensaje = 2;
+			}
+
+			echo $mensaje;
+		}
+	}
+
+}

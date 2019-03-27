@@ -1,0 +1,312 @@
+var ruta_universal = baseurl
+
+$("#txtFechaVencimiento").datetimepicker({
+	format: 'YYYY-MM-DD'
+})
+
+
+function guardar(){
+	var txtNombreProducto 	= $("#txtNombreProducto").val()
+	var txtMarca 			= $("#txtMarca").val()
+	var txtPorcentajeG 		= $("#txtPorcentajeG").val()
+	var txtFechaVencimiento = $("#txtFechaVencimiento").val()
+	var cbxTipoProducto 	= $("#cbxTipoProducto").val()
+	var cbxUnidadMedida 	= $("#cbxUnidadMedida").val()
+
+	//alert(txtNombreProducto + ' ' + txtMarca + ' ' + txtPorcentajeG + ' ' + txtFechaVencimiento + ' ' + cbxTipoProducto)
+	var swCamposObligatorios = 0
+	$(".cobligatorio").each(function (indice, input){
+		if ($(input).val() == "") {
+			swCamposObligatorios = 1
+			$(input).css('border-bottom','1px solid red')
+			$(input).css('placeholder', 'Campo Obligatorio')
+		}
+	})
+
+	if (swCamposObligatorios == 1){
+		$.growl.waring({
+			title: "Opps!",
+			message: "Hay campos obligatorios que estan vacíos, por favor llenar la información correspondiente"
+		});
+	}else{
+
+		// Agregamos ajax para guardar los datos del formulario
+		$.ajax({
+			url: ruta_universal +'Producto_controllers/Guardar',
+			type:'POST',
+			data:{
+				'txtNombreProducto': txtNombreProducto,
+				'txtMarca': txtMarca,
+				'txtPorcentajeG': txtPorcentajeG,
+				'txtFechaVencimiento': txtFechaVencimiento,
+				'cbxTipoProducto': cbxTipoProducto,
+				'cbxUnidadMedida': cbxUnidadMedida
+			},
+			cache:false,
+			success:function(data){
+				if(data == 2){
+					$.growl.error({
+						title: "Opps!",
+						message: "ocurrio un problema al ingresar los datos, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					if(data == 1){
+						$.growl.notice({
+							title: "Éxito!",
+							message: "Se registro la información satisfactoriamente"
+						});
+						$("#tbodyProducto").html('')
+						$("#txtNombreProducto").val('')
+						$("#txtMarca").val('')
+					    $("#txtPorcentajeG").val('')
+						$("#txtFechaVencimiento").val('')
+						//$("#cbxTipoProducto").val().selectpicker('refresh')
+						
+					}
+				}
+			},complete:function(){
+				ListarProducto()
+			}
+		})
+	}
+}
+
+function cancelar(){
+	$("#btn-guardarProducto").attr('onclick', 'guardar()')
+	$("#txtNombreProducto").val('')
+	$("#txtMarca").val('')
+	$("#txtPorcentajeG").val('')
+	$("#txtFechaVencimiento").val('')
+	$(".cobligatorio").each(function (indice, input) {
+		if ($(input).val() == "") {
+			$(input).css('border-bottom', '1px solid #e0e0e0')
+		}
+	})
+	$("#cbxTipoProducto").val().selectpicker('refresh')
+}
+
+function ListarProducto(){
+	
+	var cont = 0
+	var estadoProducto
+	var classBtn
+	$.ajax({
+		url: ruta_universal + 'Producto_controllers/ListarProducto',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			var tabla = JSON.parse(data);
+			$.each(tabla, function(i, item){
+				// Validar estado del producto
+				if (item.estado == 0){
+					estadoProducto = 'Deshabilitar(\'' + item.ProductoId + '\')'
+					classBtn = ' palette-Green'
+				}else{
+					if (item.estado == 1) {
+						estadoProducto = 'Habilitar(\'' + item.ProductoId + '\')'
+						classBtn = ' palette-Orange'
+					}
+				}
+				cont++
+				$("#tbodyProducto").append(
+					'<tr>'+
+					'<td>' + cont + '</td>' +
+					'<td>' + item.nombreproducto + '</td>'+
+					'<td>' + item.Marca +'</td>' +
+					'<td>' + item.siglaUnidad +'</td>' +
+					'<td>' + item.FechaVencimiento +'</td>' +
+					'<td>' + item.nombreTipoProducto +'</td>' +
+					'<td>'+
+					'<button type="button" class="btn palette-Light-Blue bg" onclick="PasarParamVen(\'' + item.nombreproducto + '\', \'' + item.Marca + '\', \'' + item.unidadId + '\', \'' + item.FechaVencimiento + '\', \'' + item.idTipoProducto + '\', \'' + item.ProductoId + '\')"><i class="zmdi zmdi-account"></i></button>'+
+					'<button type="button" class="btn ' + classBtn +' bg" onclick="' + estadoProducto +'"><i class="zmdi zmdi-account"></i></button>' +
+					'</td>' +
+					'</tr>'
+				)
+			});
+			//inicializar()
+		}
+	})
+}
+
+ListarProducto()
+
+function PasarParamVen(nombreproducto, Marca, unidadId, FechaVencimiento, idTipoProducto, ProductoId){
+	$("#txtNombreProducto").val(nombreproducto)
+	$("#txtMarca").val(Marca)
+	$("#cbxUnidadMedida").val(unidadId).selectpicker('refresh');
+	$("#txtFechaVencimiento").val(FechaVencimiento)
+	$("#txtIdProducto").val(ProductoId)
+	$("#cbxTipoProducto").val(idTipoProducto).selectpicker('refresh');
+	$("#btn-guardarProducto").attr('onclick','EditarProducto()')
+	$("#txtNombreProducto").focus()
+	$(".cobligatorio").each(function (indice, input) {
+		$(input).css('border-bottom', '1px solid #e0e0e0')
+	})
+}
+
+function EditarProducto(){
+	var txtNombreProducto = $("#txtNombreProducto").val()
+	var txtMarca = $("#txtMarca").val()
+	var txtPorcentajeG = $("#txtPorcentajeG").val()
+	var txtFechaVencimiento = $("#txtFechaVencimiento").val()
+	var cbxTipoProducto = $("#cbxTipoProducto").val()
+	var txtIdProducto = $("#txtIdProducto").val()
+
+	var swCamposObligatorios = 0
+	$(".cobligatorio").each(function (indice, input) {
+		if ($(input).val() == "") {
+			swCamposObligatorios = 1
+			$(input).css('border-bottom', '1px solid red')
+			$(input).css('placeholder', 'Campo Obligatorio')
+		}
+	})
+
+	// Validamos campos vacíos 
+	if (swCamposObligatorios == 1) {
+		$.growl.warning({
+			title: "Opps!",
+			message: "Hay campos obligatorios que estan vacíos, por favor llenar la información correspondiente"
+		});
+		
+	} else {
+		$.ajax({
+			url: ruta_universal + 'Producto_controllers/EditarProducto',
+			type:'POST',
+			data:{
+				'txtNombreProducto': txtNombreProducto,
+				'txtMarca': txtMarca,
+				'txtPorcentajeG': txtPorcentajeG,
+				'txtFechaVencimiento': txtFechaVencimiento,
+				'cbxTipoProducto': cbxTipoProducto,
+				'txtIdProducto': txtIdProducto
+			},
+			cache:false,
+			success:function(data){
+				if(data == 2){
+					$.growl.error({
+						title: "Opps!",
+						message: "ocurrio un problema al editar los datos, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					$.growl.notice({
+						title: "Éxito!",
+						message: "se modifico la información satisfactoriamente"
+					});
+					$("#txtNombreProducto").val('')
+					$("#txtMarca").val('')
+					$("#txtPorcentajeG").val('')
+					$("#txtFechaVencimiento").val('')
+					//$("#cbxTipoProducto").val().selectpicker('refresh')
+					$("#txtIdProducto").val('')
+					$("#btn-guardarProducto").attr('onclick', 'guardar()')
+					$("#tbodyProducto").html('')
+				}
+			},complete:function(){
+				ListarProducto()
+			}
+		})
+	}
+}
+
+function Deshabilitar(idProducto){
+	
+	if (idProducto === ''){
+		$.growl.warning({
+			title: "Opps!",
+			message: "Este Producto no se puede deshabilitar, Consulte a soporte"
+		});
+	}else{
+		$.ajax({
+			url: ruta_universal + 'Producto_controllers/Deshabilitar',
+			type:'POST',
+			data:{
+				'idProducto': idProducto
+			},
+			cache:false,
+			success:function(data){
+				if(data == 2){
+						$.growl.error({
+							title: "Opps!",
+							message: "ocurrio un problema al deshabiltar el producto seleccionado, intenta nuevamente, o consulta a soporte"
+						});
+				}else{
+					if(data == 1){
+						$.growl.notice({
+							title: "Éxito!",
+							message: "El producto seleccionado fue deshabilitado satisfactoriamente"
+						});
+						$("#tbodyProducto").html('')
+					}
+				}
+			},complete:function(){
+				ListarProducto()
+			}
+		})
+	}
+}
+
+function Habilitar(idProducto) {
+
+	if (idProducto === '') {
+		$.growl.error({
+			title: "Opps!",
+			message: "Este Producto no se puede deshabilitar, Consulte a soporte"
+		});
+	} else {
+		$.ajax({
+			url: ruta_universal + 'Producto_controllers/Habilitar',
+			type: 'POST',
+			data: {
+				'idProducto': idProducto
+			},
+			cache: false,
+			success: function (data) {
+				if(data == 2){
+					$.growl.error({
+						title: "Opps!",
+						message: "ocurrio un problema al habiltar el producto seleccionado, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					if(data == 1){
+						$.growl.notice({
+							title: "Éxito!",
+							message: "El producto seleccionado fue habilitado satisfactoriamente"
+						});
+						$("#tbodyProducto").html('')
+					}
+				}
+			}, complete:function(){
+				ListarProducto()
+			}
+		})
+	}
+}
+
+function inicializar(){
+	$("#tablaProducto").bootgrid({
+		css: {
+			icon: 'zmdi icon',
+			iconColumns: 'zmdi-view-module',
+			iconDown: 'zmdi-expand-more',
+			iconRefresh: 'zmdi-refresh',
+			iconUp: 'zmdi-expand-less'
+		},
+		/*ajax:true,
+		rowSelect:true,
+		post:function(){
+			return{
+				id:"b0df282a-0d67-40e5-8558-c9e93b7befed"
+			}
+		},
+		url: ruta_universal + "Producto_controllers/ListarProducto",
+		formatters:{
+			"commands":function(column, row){
+				return "<button type=\"button\" class=\"btn btn-icon command-edit waves-effect waves-circle\" data-row-id=\"" + row.id + "\"><span class=\"zmdi zmdi-edit\"></span></button> " +
+				"<button type=\"button\" class=\"btn btn-icon command-delete waves-effect waves-circle\" data-row-id=\"" + row.id + "\"><span class=\"zmdi zmdi-delete\"></span></button>";
+			}
+		}*/
+	});
+}
+//inicializar()
+
+	

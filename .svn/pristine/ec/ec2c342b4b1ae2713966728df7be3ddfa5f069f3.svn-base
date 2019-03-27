@@ -1,0 +1,19 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Unidadmedidad_controllers extends CI_Controller
+{
+	function __Construct()
+	{
+		parent::__Construct();
+		$this->load->Model('Model_menu');
+		$this->load->Model('Model_unidadmedida');
+	}
+
+	public function listarComboUnidadmedida()
+	{
+		$data = $this->Model_unidadmedida->listarComboUnidadmedida();
+		echo json_encode($data);
+	}
+
+}

@@ -1,0 +1,41 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Producto_controllers extends CI_Controller
+{
+	function __Construct()
+	{
+		parent::__Construct();
+		$this->load->Model('Model_menu');
+		$this->load->Model('Model_proveedor');
+		$this->load->Model('Model_producto');
+	}
+
+	public function Guardar(){
+		if ($this->input->is_ajax_request()) {
+			$txtNombreProducto 		= $this->input->post('txtNombreProducto');
+			$txtMarca 				= $this->input->post('txtMarca');
+			$txtPorcentajeG 		= $this->input->post('txtPorcentajeG');
+			$txtFechaVencimiento 	= $this->input->post('txtFechaVencimiento');
+			$cbxTipoProducto 		= $this->input->post('cbxTipoProducto');
+			$mensaje = '';
+
+			$data = array(
+				'TipoProductoid' => $cbxTipoProducto,
+				'Nombre' => $txtNombreProducto,
+				'Marca' => $txtMarca,
+				'PorcentajeGanancia' => $txtPorcentajeG,
+				'FechaVencimiento' => $txtFechaVencimiento
+			);
+
+			$idProducto = $this->Model_producto->Guardar($data);
+			if($idProducto != ''){
+				$mensaje = 1;
+			}else{
+				$mensaje = 2;
+			}
+
+			echo $mensaje;
+		}
+	}
+}

@@ -1,0 +1,19 @@
+<?php
+
+class Model_producto extends CI_Model
+{
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	}	
+
+	public function Guardar($data){
+		$this->db->insert('producto', $data);
+		if ($this->db->affected_rows() > 0) {
+			return $this->db->insert_id();;
+		} else {
+			return false;
+		}
+	}
+}

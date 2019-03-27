@@ -1,0 +1,15 @@
+
+var ruta_universal = baseurl
+
+function listarComboTipoUsuario() {
+	$.ajax({
+		url: ruta_universal + 'Proveedor_controllers/listarComboProveedor',
+		type: 'POST',
+		cache: false,
+		success: function (data) {
+			alert(data)
+		}
+	})
+}
+
+listarComboTipoUsuario()

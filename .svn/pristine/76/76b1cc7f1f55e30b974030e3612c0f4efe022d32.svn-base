@@ -1,0 +1,90 @@
+var ruta_universal = baseurl
+
+$("#FechaNac").datetimepicker({
+	format: 'YYYY-MM-DD'
+})
+
+function QuitarErrorCampo(idCampo){
+	var idCampoObligatorio = $("#"+idCampo)
+	var p = idCampoObligatorio.attr('id')
+	if (idCampoObligatorio.val() != ''){
+		idCampoObligatorio.css('border-bottom', '1px solid #e0e0e0')
+	}
+}
+
+function guardar(){
+	var NombreCliente = $("#NombreCliente").val()
+	var SegundoNombre = $("#SegundoNombre").val()
+	var ApePaterno = $("#ApePaterno").val()
+	var ApeMaterno = $("#ApeMaterno").val()
+	var Identificacion = $("#Identificacion").val()
+	var FechaNac = $("#FechaNac").val()
+	var Direccion = $("#Direccion").val()
+	var Telefono = $("#Telefono").val()
+	var Correo = $("#Correo").val()
+	var Celular = $("#Celular").val()
+
+    var swCamposObligatorios = 0
+	$(".cobligatorio").each(function (indice, input){
+		if ($(input).val() == "") {
+			swCamposObligatorios = 1
+			$(input).css('border-bottom','1px solid red')
+			$(input).css('placeholder', 'Campo Obligatorio')
+		}
+	})
+
+	if (swCamposObligatorios == 1){
+		$.growl.warning({
+			title: "Opps!",
+			message: "Hay campos obligatorios que estan vacíos, por favor llenar la información correspondiente"
+		});
+	}else{
+
+		// Agregamos ajax para guardar los datos del formulario
+		$.ajax({
+			url: ruta_universal +'Cliente_controllers/guardar',
+			type:'POST',
+			data:{
+				'NombreCliente':NombreCliente,
+                'SegundoNombre':SegundoNombre,
+                'ApePaterno':ApePaterno,
+                'ApeMaterno':ApeMaterno,
+                'Identificacion':Identificacion,
+                'FechaNac':FechaNac,
+                'Direccion':Direccion,
+                'Telefono':Telefono,
+                'Correo':Correo,
+                'Celular':Celular
+			},
+			cache:false,
+			success:function(data){
+				if(data == 2){
+					$.growl.error({
+						title: "Opps!",
+						message: "ocurrio un problema al ingresar los datos, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					if(data == 1){
+						$.growl.notice({
+							title: "Éxito!",
+							message: "Se registro la información satisfactoriamente"
+						});
+						$("#NombreCliente").val('')
+                        $("#SegundoNombre").val('')
+                        $("#ApePaterno").val('')
+                        $("#ApeMaterno").val('')
+                        $("#Identificacion").val('')
+                        $("#FechaNac").val('')
+                        $("#Direccion").val('')
+                        $("#Telefono").val('')
+                        $("#Correo").val('')
+                        $("#Celular").val('')
+						
+					}
+				}
+			},complete:function(){
+				//ListarProducto()
+			}
+		})
+	}
+}

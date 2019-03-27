@@ -1,0 +1,245 @@
+var rutaUniversal = baseurl;
+
+function listarComboTipoReceta(){
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/listarComboTipoReceta',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			
+			var datos = JSON.parse(data)
+			$.each(datos, function(i, item){
+				$("#tiporeceta").append(
+					'<option value="' + item.TipoRecetaId + '">' + item.nombreTipoReceta +'</option>'
+				)
+			})
+			$("#tiporeceta").selectpicker()
+		}
+	})
+}
+
+listarComboTipoReceta()
+
+function listarComboProducto(){
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/listarComboProducto',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			
+			var datos = JSON.parse(data)
+			$.each(datos, function(i, item){
+				$("#cbxProducto").append(
+					'<option value="' + item.ProductoId + '">' + item.nombreProducto +'</option>'
+				)
+			})
+			$("#cbxProducto").selectpicker()
+		}
+	})
+}
+
+listarComboProducto()
+
+function cancelar(){
+    $("#guardarReceta").attr('onclick', 'guardar()')
+    $("#RecetaId").val('');
+    $("#IngredienteId").val('');    
+	$("#nombre").val('');
+    $("#descripcion").val('');
+    $("#tiporeceta").val('default').selectpicker("refresh");
+    $("#cbxProducto").val('default').selectpicker("refresh");
+    $("#cantidad").val('');
+    $("#costoPorcion").val('');
+    $("#costoPreparacion").val('');
+}
+
+function guardar() {
+    var nombreReceta = $("#nombre").val();
+    var descripcion = $("#descripcion").val();
+    var tiporeceta = $("#tiporeceta").val();
+    var producto = $("#cbxProducto").val();
+    var cantidadPorcion = $("#cantidad").val();
+    var costo = $("#costoPorcion").val();
+    var costoPreparacion = $("#costoPreparacion").val();
+
+    if(nombreReceta === ''){
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite el nombre de la receta"
+          });
+    
+    } 
+    else if(tiporeceta === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el tipo de receta"
+          });
+    } 
+    else if(producto === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el Producto"
+          });
+    }
+    else if(cantidadPorcion === '') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite la Cantidad de la porcion"
+          });
+    }
+    else{
+        $.ajax({
+            url: rutaUniversal + 'Receta_controllers/guardar',
+            type: 'POST',
+            data: $("#registroRecetas").serialize(),
+            success: function (data) {
+                if (data) {
+                    console.log(data)
+                    $.growl.notice({
+                        title: "Exito!",
+                        message: "Receta guardada correctamente"
+                      });
+                      $("#tbodyReceta").html('')
+                      $("#nombre").val('');
+                      $("#descripcion").val('');
+                      $("#tiporeceta").val('default').selectpicker("refresh");
+                      $("#cbxProducto").val('default').selectpicker("refresh");
+                      $("#cantidad").val('');
+                      $("#costoPorcion").val('');
+                      $("#costoPreparacion").val('');
+    
+                } else {
+                    $.growl.notice({
+                        title: "Atención!",
+                        message: "Ocurrio un error"
+                      });
+                }
+            },complete:function(){
+				ListarReceta()
+			}
+        })
+    }
+}
+
+function ListarReceta(){
+	var cont = 0
+	var estadoReceta
+	var classBtn
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/ListarReceta',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			var tabla = JSON.parse(data);
+			$.each(tabla, function(i, item){
+				// Validar estado del Receta
+				if (item.estado == 0){
+					estadoReceta = 'Deshabilitar(\'' + item.RecetaId + '\')'
+					classBtn = ' palette-Green'
+				}else{
+					if (item.estado == 1) {
+						estadoReceta = 'Habilitar(\'' + item.RecetaId + '\')'
+						classBtn = ' palette-Orange'
+					}
+				}
+				cont++
+				$("#tbodyReceta").append(
+					'<tr>'+
+					'<td>' + cont + '</td>' +
+					'<td>' + item.nombreReceta +'</td>'+
+					'<td>' + item.Descripcion +'</td>' +
+					'<td>' + item.TipoReceta +'</td>' +
+					'<td>'+
+					'<button type="button" class="btn palette-Light-Blue bg" onclick="PasarParamVen(\'' + item.IngredienteId + '\', \'' + item.RecetaId + '\', \'' + item.nombreReceta + '\', \'' + item.Descripcion + '\', \'' + item.TipoRecetaId + '\', \'' + item.ProductoId + '\', \'' + item.Cantidad + '\', \'' + item.CostoPorcion + '\', \'' + item.CostoPreparacion + '\',)"><i class="zmdi zmdi-account"></i></button>'+
+					'<button type="button" class="btn ' + classBtn +' bg" onclick="' + estadoReceta +'"><i class="zmdi zmdi-account"></i></button>' +
+					'</td>' +
+					'</tr>'
+				)
+			})
+		}
+	})
+}
+
+ListarReceta()
+
+function PasarParamVen(IngredienteId, RecetaId, nombreReceta, Descripcion, TipoRecetaId, ProductoId, Cantidad, CostoPorcion, CostoPreparacion){
+    $("#IngredienteId").val(IngredienteId);
+    $("#RecetaId").val(RecetaId);
+    $("#nombre").val(nombreReceta);
+    $("#descripcion").val(Descripcion);
+    $("#tiporeceta").val(TipoRecetaId).selectpicker("refresh");
+    $("#cbxProducto").val(ProductoId).selectpicker("refresh");
+    $("#cantidad").val(Cantidad);
+    $("#costoPorcion").val(CostoPorcion);
+    $("#costoPreparacion").val(CostoPreparacion);
+	$("#guardarReceta").attr('onclick','EditarReceta()')
+	$("#nombre").focus()
+}
+
+function EditarReceta(){
+    var nombreReceta = $("#nombre").val();
+    var descripcion = $("#descripcion").val();
+    var tiporeceta = $("#tiporeceta").val();
+    var producto = $("#cbxProducto").val();
+    var cantidadPorcion = $("#cantidad").val();
+    var costo = $("#costoPorcion").val();
+    var costoPreparacion = $("#costoPreparacion").val();
+
+	if(nombreReceta === ''){
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite el nombre de la receta"
+          });
+    
+    } 
+    else if(tiporeceta === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el tipo de receta"
+          });
+    } 
+    else if(producto === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el Producto"
+          });
+    }
+    else if(cantidadPorcion === '') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite la Cantidad de la porcion"
+          });
+    }
+    else{
+        $.ajax({
+            url: rutaUniversal + 'Receta_controllers/EditarReceta',
+            type: 'POST',
+            data: $("#registroRecetas").serialize(),
+            success: function (data) {
+                if (data) {
+                    $.growl.notice({
+                        title: "Exito!",
+                        message: "Receta Actualizada con Exito"
+                    });
+                    $("#tbodyReceta").html('')
+                    $("#nombre").val('');
+                    $("#descripcion").val('');
+                    $("#tiporeceta").val('default').selectpicker("refresh");
+                    $("#cbxProducto").val('default').selectpicker("refresh");
+                    $("#cantidad").val('');
+                    $("#costoPorcion").val('');
+                    $("#costoPreparacion").val('');
+                    $("#guardarReceta").attr('onclick','guardar()')
+    
+                } else {
+                    $.growl.notice({
+                        title: "Atención!",
+                        message: "Ocurrio un error"
+                      });
+                }
+            },complete:function(){
+				ListarReceta()
+			}
+        })
+    }
+}

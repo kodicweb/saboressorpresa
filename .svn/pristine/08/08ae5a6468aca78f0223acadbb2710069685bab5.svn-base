@@ -1,0 +1,25 @@
+var ruta_universal = baseurl
+
+
+
+function listarComboTipoProveedor() {
+	$.ajax({
+		url: ruta_universal + 'tipoproveedor_controllers/listarComboTipoProveedor',
+		type: 'POST',
+		cache: false,
+		success: function (data) {
+
+			var datos = JSON.parse(data)
+			$.each(datos, function (i, item) {
+				$("#cbxTipoProveedor").append(
+					'<option value="' + item.idTipoProveedor + '">' + item.nombreTipoProveedo + '</option>'
+				)
+			})
+			$(".selectpickerProveedor").selectpicker()
+		}
+	})
+}
+
+listarComboTipoProveedor()
+
+

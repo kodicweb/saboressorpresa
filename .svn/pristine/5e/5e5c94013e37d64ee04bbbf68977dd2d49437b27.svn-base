@@ -1,0 +1,20 @@
+var ruta_universal = baseurl
+
+function listarComboUnidadmedida() {
+	$.ajax({
+		url: ruta_universal + 'unidadmedidad_controllers/listarComboUnidadmedida',
+		type: 'POST',
+		cache: false,
+		success: function (data) {
+			var datos = JSON.parse(data)
+			$.each(datos, function (i, item) {
+				$("#cbxUnidadMedida").append(
+					'<option value="' + item.idunidadmedida + '">' + item.siglaUnidadMedida + '</option>'
+				)
+			})
+			$(".selectpicker2").selectpicker()
+		}
+	})
+}
+
+listarComboUnidadmedida()

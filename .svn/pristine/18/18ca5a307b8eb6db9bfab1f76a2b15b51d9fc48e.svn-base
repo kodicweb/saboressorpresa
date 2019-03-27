@@ -1,0 +1,291 @@
+
+var ruta_universal = baseurl
+
+// Función para guardar los proveedores en el sistema
+function guardarProveedor(){
+	
+	var txtNombreProveedor 	= $("#txtNombreProveedor").val()
+	var txtNitProveedor 	= $("#txtNitProveedor").val()
+	var txtDireccion 		= $("#txtDireccion").val()
+	var txtTelefono 		= $("#txtTelefono").val()
+	var cbxTipoProveedor 	= $("#cbxTipoProveedor").val()
+
+	var swCamposObligatorios = 0
+	$(".cobligatorio").each(function (indice, input) {
+		if ($(input).val() == "") {
+			swCamposObligatorios = 1
+			$(input).css('border-bottom', '1px solid red')
+			$(input).css('placeholder', 'Campo Obligatorio')
+		}
+	})
+
+	if (swCamposObligatorios == 1) {
+		$.growl.warning({
+			title: "Opps!",
+			message: "Hay campos obligatorios que estan vacíos, por favor llenar la información correspondiente"
+		});
+	}else{
+		$.ajax({
+			url: ruta_universal + 'proveedor_controllers/guardarProveedor',
+			type:'POST',
+			data:{
+				'txtNombreProveedor': txtNombreProveedor,
+				'txtNitProveedor': txtNitProveedor,
+				'txtDireccion': txtDireccion,
+				'txtTelefono': txtTelefono,
+				'cbxTipoProveedor': cbxTipoProveedor
+			},
+			cache:false,
+			success:function(data){
+				if (data == 2) {
+					$.growl.error({
+						title: "Opps!",
+						message: "ocurrio un problema al ingresar los datos, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					$("#tbodyProveedor").html('')
+					$.growl.notice({
+						title: "Éxito!",
+						message: "Se registro la información satisfactoriamente"
+					});
+					$("#txtNombreProveedor").val('')
+					$("#txtNitProveedor").val('')
+					$("#txtDireccion").val('')
+					$("#txtTelefono").val('')
+					
+				}
+			},complete:function(){
+				ListarProveedores()
+			}
+		})
+	}
+}
+
+function EditarProveedor(){
+	var txtNombreProveedor 	= $("#txtNombreProveedor").val()
+	var txtNitProveedor 	= $("#txtNitProveedor").val()
+	var txtDireccion 		= $("#txtDireccion").val()
+	var txtTelefono 		= $("#txtTelefono").val()
+	var cbxTipoProveedor 	= $("#cbxTipoProveedor").val()
+	var txtIdProvedor 		= $("#txtIdProvedor").val()
+
+
+	var swCamposObligatorios = 0
+	$(".cobligatorio").each(function (indice, input) {
+		if ($(input).val() == "") {
+			swCamposObligatorios = 1
+			$(input).css('border-bottom', '1px solid red')
+			$(input).css('placeholder', 'Campo Obligatorio')
+		}
+	})
+
+	if (swCamposObligatorios == 1) {
+		$.growl.warning({
+			title: "Opps!",
+			message: "Hay campos obligatorios que estan vacíos, por favor llenar la información correspondiente"
+		});
+	}else{
+		$.ajax({
+			url: ruta_universal + 'proveedor_controllers/EditarProveedor',
+			type:'POST',
+			data:{
+				'txtNombreProveedor': txtNombreProveedor,
+				'txtNitProveedor': txtNitProveedor,
+				'txtDireccion': txtDireccion,
+				'txtTelefono': txtTelefono,
+				'cbxTipoProveedor': cbxTipoProveedor,
+				'txtIdProvedor': txtIdProvedor
+			},
+			cache:false,
+			success:function(data){
+				if(data == 2){
+					$.growl.error({
+						title: "Opps!",
+						message: "ocurrio un problema al editar la información, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					if(data == 1){
+						$("#tbodyProveedor").html('')
+						$.growl.notice({
+							title: "Éxito!",
+							message: "se medito la información satisfactoriamente"
+						});
+						$("#txtNombreProveedor").val('')
+						$("#txtNitProveedor").val('')
+						$("#txtDireccion").val('')
+						$("#txtTelefono").val('')
+						$("#txtIdProvedor").val('')
+						$("#btn-guardarProveedor").attr('onclick', 'guardarProveedor()')
+					}	
+				}
+			},complete:function(){
+				ListarProveedores()
+			}
+		})
+	}
+}
+
+
+// listar proveedores
+function ListarProveedores(){
+	var cont = 0
+	var estadoProducto
+	var classBtn
+	$.ajax({
+		url: ruta_universal + 'proveedor_controllers/ListarProveedores',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			var tabla = JSON.parse(data)
+			$.each(tabla, function(i,item){
+				cont++
+				if(item.estado == 0){
+					estadoProducto = 'DeshabilitarProveedor(\'' + item.idProveedor + '\')'
+					classBtn = ' palette-Green'
+				}else{
+					if (item.estado == 1) {
+						estadoProducto = 'HabilitarProveedor(\'' + item.idProveedor + '\')'
+						classBtn = ' palette-Orange'
+					}
+				}
+
+				$("#tbodyProveedor").append(
+					'<tr>' +
+					'<td>' + cont + '</td>' +
+					'<td>' + item.nombreProveedor + '</td>' +
+					'<td>' + item.nitProveedor + '</td>' +
+					'<td>' + item.direccionProveedor + '</td>' +
+					'<td>' + item.telefonoProveedor + '</td>' +
+					'<td>' + item.Nombre + '</td>' +
+					'<td>' +
+					'<button type="button" class="btn palette-Light-Blue bg" onclick="PasarParamVen(\'' + item.nombreProveedor + '\', \'' + item.nitProveedor + '\', \'' + item.direccionProveedor + '\', \'' + item.telefonoProveedor + '\', \'' + item.idTipoProveedor + '\', \'' + item.idProveedor + '\')"><i class="zmdi zmdi-account"></i></button>' +
+					'<button type="button" class="btn ' + classBtn + ' bg" onclick="' + estadoProducto + '"><i class="zmdi zmdi-account"></i></button>' +
+					'</td>' +
+					'</tr>'
+				)
+			})
+		}
+	})
+}
+
+ListarProveedores()
+
+function PasarParamVen(nombreProveedor, nitProveedor, direccionProveedor, telefonoProveedor, idTipoProveedor, idProveedor){
+	$("#txtNombreProveedor").val(nombreProveedor)
+	$("#txtNitProveedor").val(nitProveedor)
+	$("#txtDireccion").val(direccionProveedor)
+	$("#txtTelefono").val(telefonoProveedor)
+	$("#cbxTipoProveedor").val(idTipoProveedor).selectpicker('refresh');
+	$("#txtIdProvedor").val(idProveedor)
+
+	$("#btn-guardarProveedor").attr('onclick','EditarProveedor()')
+	$("#txtNombreProveedor").focus()
+
+	$(".cobligatorio").each(function (indice, input) {
+		$(input).css('border-bottom', '1px solid #e0e0e0')
+	})
+}
+
+function cancelarProveedor(){
+	$("#txtNombreProveedor").val('')
+	$("#txtNitProveedor").val('')
+	$("#txtDireccion").val('')
+	$("#txtTelefono").val('')
+	$("#txtIdProvedor").val('')
+	$("#btn-guardarProveedor").attr('onclick', 'guardarProveedor()')
+	$("#txtNombreProveedor").focus()
+	$(".cobligatorio").each(function (indice, input) {
+		if ($(input).val() == "") {
+			$(input).css('border-bottom', '1px solid #e0e0e0')
+		}
+	})
+}
+
+
+function DeshabilitarProveedor(idProveedor){
+	if (idProveedor != '') {
+		$.ajax({
+			url: ruta_universal + 'proveedor_controllers/Accion',
+			type:'POST',
+			data:{
+				'estado': 1,
+				'idProveedor':idProveedor
+			},
+			cache:false,
+			success:function(data){
+				if(data == 2){
+					$.growl.error({
+						title: "Opps!",
+						message: "Ocurrio un problema al deshabiltar el proveedor seleccionado, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					if(data == 1){
+						$("#tbodyProveedor").html('')
+						$.growl.notice({
+							title: "Éxito!",
+							message: "El proveedor seleccionado fue deshabilitado satisfactoriamente"
+						});
+					}
+				}
+			}, complete: function () {
+				ListarProveedores()
+			}
+		})
+	} else {
+		$.growl.error({
+			title: "Opps!",
+			message: "Para poder deshabilitar debe seleccionar un proveedor"
+		});
+	}
+}
+
+
+function HabilitarProveedor(idProveedor) {
+
+	if (idProveedor != ''){
+		$.ajax({
+			url: ruta_universal + 'proveedor_controllers/Accion',
+			type: 'POST',
+			data: {
+				'estado': 0,
+				'idProveedor':idProveedor
+			},
+			cache: false,
+			success: function (data) {
+				if(data == 2){
+					$.growl.error({
+						title: "Opps!",
+						message: "Ocurrio un problema al habiltar el proveedor seleccionado, intenta nuevamente, o consulta a soporte"
+					});
+				}else{
+					if(data == 1){
+						$("#tbodyProveedor").html('')
+						$.growl.notice({
+							title: "Éxito!",
+							message: "El proveedor seleccionado fue habilitado satisfactoriamente"
+						});
+					}
+					
+				}
+			}, complete:function(){
+				ListarProveedores()
+			}
+		})
+	}else{
+		$.growl.error({
+			title: "Opps!",
+			message: "Para poder Habilitar debe seleccionar un proveedor"
+		});
+	}
+}
+
+function QuitarErrorCampo(idCampo) {
+
+	var idCampoObligatorio = $("#" + idCampo)
+	var p = idCampoObligatorio.attr('id')
+	if (idCampoObligatorio.val() != '') {
+		idCampoObligatorio.css('border-bottom', '1px solid #e0e0e0')
+	}
+}
+
+

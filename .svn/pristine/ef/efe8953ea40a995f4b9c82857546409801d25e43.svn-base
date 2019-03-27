@@ -1,0 +1,19 @@
+<?php
+
+class Model_tipoproveedor extends CI_Model
+{
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	}
+
+	public function listarComboTipoProveedor()
+	{
+		$this->db->select('TipoProveedorId as idTipoProveedor, Nombre as nombreTipoProveedo');
+		$this->db->from('tipoproveedor');
+		$this->db->where('eliminado', 0);
+		$datos = $this->db->get();
+		return $datos->result();
+	}
+}

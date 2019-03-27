@@ -1,0 +1,51 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Cliente_controllers extends CI_Controller
+{
+	function __Construct()
+	{
+		parent::__Construct();
+		$this->load->Model('Model_menu');
+		$this->load->Model('Model_cliente');
+	}
+
+	public function guardar(){
+		if ($this->input->is_ajax_request()) {
+            $NombreCliente = $this->input->post('NombreCliente');
+            $SegundoNombre = $this->input->post('SegundoNombre');
+            $ApePaterno = $this->input->post('ApePaterno');
+            $ApeMaterno = $this->input->post('ApeMaterno');
+            $Identificacion = $this->input->post('Identificacion');
+            $FechaNac = $this->input->post('FechaNac');
+            $Direccion = $this->input->post('Direccion');
+            $Telefono = $this->input->post('Telefono');
+            $Correo = $this->input->post('Correo');
+            $Celular = $this->input->post('Celular');
+			$mensaje = '';
+
+			$data = array(
+				'PrimerNombre' => $NombreCliente,
+                'SegundoNombre' => $SegundoNombre,
+                'PrimerApellido' => $ApePaterno,
+                'SegundoApellido' => $ApeMaterno,
+                'Identificacion' => $Identificacion,
+                'FechaNacimiento' => $FechaNac,
+                'Direccion' => $Direccion,
+                'Telefono' => $Telefono,
+                'Celular' => $Celular,
+                'Correo' => $Correo
+			);
+
+			$idCliente = $this->Model_cliente->guardar($data);
+			if($idCliente != ''){
+				$mensaje = 1;
+			}else{
+				$mensaje = 2;
+			}
+
+			echo $mensaje;
+		}
+	}
+
+}

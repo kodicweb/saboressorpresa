@@ -1,0 +1,27 @@
+
+
+function ListarMenu(){
+
+    $.ajax({
+        url:'http://localhost/SaboresSorpresa/menu_controllers/ListarMenus',
+        type:'POST',
+        cache:false,
+        success:function(data){
+            var items = JSON.parse(data)
+            $.each(items, function(i, item){
+                $("#menu").append(
+                    '<li class="active">'+
+                    '<a href="index-2.html"><i class="zmdi zmdi-home"></i> '+ item.Nombre +'</a>'+
+                    '</li>'
+                )
+            })
+            /*$("#menu").append(
+                '<li class="active">'+
+                '<a href="index-2.html"><i class="zmdi zmdi-home"></i> ''</a>'+
+                ''
+            )*/
+        }
+    })
+
+}
+ListarMenu()

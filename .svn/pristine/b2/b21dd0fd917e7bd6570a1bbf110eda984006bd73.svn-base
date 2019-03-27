@@ -1,0 +1,69 @@
+<div class="c-header">
+	<h2>Unidades de Medidas</h2>
+</div>
+<div class="card">
+    <div class="card-body card-padding">
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+					 <div class="fg-line">
+						 <input type="text" name="NombreMedida" id="NombreMedida" class="form-control cobligatorio" placeholder="Unidad de medida"  onkeyup="QuitarErrorCampo('NombreMedida')">
+					 </div>
+				</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="input-group">
+					 <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+					 <div class="fg-line">
+						 <input type="text" name="sigla" id="sigla" class="form-control cobligatorio" placeholder="Abreviatura" onkeyup="QuitarErrorCampo('sigla')">
+					 </div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12">
+			
+			<div class="btn-colors btn-demo" style="float:right !important;">
+				<!--<button type="button" onclick="guardar()" class="btn palette-Cyan bg waves-effect" style="margin-right:5px !important;">Guardar</button>-->
+				<button class="btn palette-Red bg waves-effect" 	onclick="cancelar()">Cancelar</button>		
+				<button class="btn palette-Blue bg waves-effect" onclick="guardar()" id="btn-guardarUnidades">Guardar</button>
+			</div>
+			<input type="hidden" id="UnidadId">	
+		</div>
+	</div>
+</div>
+
+<!-- Tabla con la información de las Unidades de Medidas creadas en el sistemas -->
+<div class="card">
+	<div class="card-body card-padding">
+		<div class="row">
+			<div class="col-sm-12">
+				<h2>Lista de Unidades</h2>
+			</div>
+		</div>
+			
+		<div class="table-responsive">
+			<table id="tablaunidades" class="table table-striped">
+				<thead>
+					<tr>
+						<th data-column-id="id">#</th>
+						<th data-column-id="nombre">Unidad Medidad</th>
+						<th data-column-id="sigla">Sigla</th>
+						<th data-column-id="acciones">Acciones</th>
+					</tr>
+				</thead>
+				<tbody id="tbodyUnidades"></tbody>
+				
+			</table>
+		</div>
+			
+	</div>
+</div>
+
+<script> 
+    var baseurl = "<?php echo base_url(); ?>"
+</script>
+
+<script src="<?php echo base_url(); ?>assets/js/Datos/Unidadmedida/Unidadmedida.js"></script>
+	

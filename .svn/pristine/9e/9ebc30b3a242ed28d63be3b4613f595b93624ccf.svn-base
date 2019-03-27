@@ -1,0 +1,84 @@
+<form id="registroUsuarios" method="post">
+
+<div class="card">
+    <div class="card-body card-padding">
+        <div class="row">
+
+            <div class="input-group">
+                <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                <div class="fg-line">
+                    <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre del empleado" required>
+                </div>
+            </div>
+            <br/>
+
+            <div class="input-group">
+                <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
+                <div class="fg-line">
+                    <input type="number" name="identificacion" id="identificacion" class="form-control" placeholder="identificacion" required>
+                </div>
+            </div>
+            <br/>
+
+            <div class="input-group">
+                <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
+                <div class="fg-line">
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Correo" required>
+                </div>
+            </div>
+            <br/>
+
+            <div class="input-group">
+                <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                <div class="fg-line">
+                    <label class="sr-only" for="exampleInputEmail2">Direccion</label>
+                    <input type="text" name="direccion" id="direccion" class="form-control" placeholder="Direccion" required>
+                </div>
+            </div>
+            
+            <br/>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                <div class="fg-line">
+                    <label class="sr-only" for="exampleInputEmail2">Direccion</label>
+                    <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Telefono" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <div class="card-body card-padding">
+            <div class="row">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                    <div class="fg-line">
+                        <label class="sr-only" for="exampleInputUsername2">Username</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Nombre de usuario" required>
+                    </div>
+                </div>
+
+                <br/>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                    <div class="fg-line">
+                        <label class="sr-only" for="exampleInputEmail2">Contraseña</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" onclick="guardar()" class="btn btn-primary btn-sm m-t-5">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<div>
+</form>
+
+<script> 
+    var baseurl = "<?php echo base_url(); ?>"
+</script>
+
+<script src="<?php echo base_url(); ?>assets/js/Datos/Usuario/Usuario.js"></script>
+

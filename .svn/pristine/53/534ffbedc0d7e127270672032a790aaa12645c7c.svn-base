@@ -1,0 +1,18 @@
+<?php
+
+class Model_proveedor extends CI_Model
+{
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	}
+
+	public function listarComboProveedor(){
+		$this->db->select('ProveedorId as idProveedor, Nombre as nombreProveedo');
+		$this->db->from('proveedor');
+		$this->db->where('estado', 0);
+		$datos = $this->db->get();
+		return $datos->result();
+	}
+}

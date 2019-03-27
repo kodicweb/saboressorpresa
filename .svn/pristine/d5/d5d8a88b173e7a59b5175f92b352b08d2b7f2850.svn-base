@@ -1,0 +1,377 @@
+var rutaUniversal = baseurl;
+
+function listarComboTipoReceta(){
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/listarComboTipoReceta',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			
+			var datos = JSON.parse(data)
+			$.each(datos, function(i, item){
+				$("#tiporeceta").append(
+					'<option value="' + item.TipoRecetaId + '">' + item.nombreTipoReceta +'</option>'
+				)
+			})
+			$("#tiporeceta").selectpicker()
+		}
+	})
+}
+listarComboTipoReceta()
+
+function listarComboSubReceta(){
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/listarComboSubReceta',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			
+			var datos = JSON.parse(data)
+			$.each(datos, function(i, item){
+				$("#Subreceta").append(
+					'<option value="' + item.RecetaId + '">' + item.nombreReceta +'</option>'
+				)
+			})
+			$("#Subreceta").selectpicker()
+		}
+	})
+}
+listarComboSubReceta();
+
+$('[name="inlineRadioOptions"]').change(function (event) {
+	if($("#Si").is(':checked')){
+        $("#ContenedorSubReceta").removeClass("hidden");
+    } else{
+        $("#ContenedorSubReceta").addClass("hidden");
+    }
+});
+
+
+/* función para pintar formularios para Añadir Ingredientes*/
+num = '0';
+var cont = parseInt(num)
+function AnadirIngredientes(){
+    cont++;
+    $("#contenedorIngredientes").append(
+        '<div class="row m-t-5 fila" id="fila'+cont+'">' +
+            '<div class="col-sm-3">' +
+                '<div class="input-group">' +
+                    '<span class="input-group-addon col-sm-1"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>' +
+                    '<div class="col-sm-3 m-b-25">' +
+                        '<select class="selectpicker" data-live-search="true" id="cbxProducto'+cont+'" name="cbxProducto">' +
+                            '<option value="0">Seleccione el producto...</option>' +
+                        '</select>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-sm-2">' +
+                '<div class="input-group">' +
+                    '<span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>' +
+                    '<div class="fg-line">' +
+                        '<input type="number" min="0" name="cantidad" id="cantidad'+cont+'" class="form-control" placeholder="Cantidad">' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-sm-3">' +
+                '<div class="input-group">' +
+                    '<span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>' +
+                    '<div class="fg-line">' +
+                        '<input type="text" name="costoPorcion" id="costoPorcion'+cont+'" class="form-control" disabled placeholder="Costo unitario por porcion" >' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-sm-3">' +
+                '<div class="input-group">' +
+                    '<span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>' +
+                    '<div class="fg-line">' +
+                        '<input type="text" name="costoPreparacion" id="costoPreparacion'+cont+'" class="form-control" disabled placeholder="Costo total por porcion" >' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="btn-colors">' +
+                '<button type="button" id="eliminafila'+cont+'" onclick="EliminarFila(\'' + cont + '\', \'fila\')" class="btn btn-default btn-icon waves-effect waves-circle waves-float"><i class="zmdi zmdi-delete mdc-text-red"></i></button>' +
+            '</div>' +
+        '</div>'
+    );
+    listarComboProducto2(cont);
+}
+
+function EliminarFila(id, fila){
+	var check = $("#"+fila+id)
+	check.remove()
+}
+
+function listarComboProducto(){
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/listarComboProducto',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			
+			var datos = JSON.parse(data)
+			$.each(datos, function(i, item){
+				$("#cbxProducto").append(
+					'<option value="' + item.ProductoId + '">' + item.nombreProducto +'</option>'
+				)
+			})
+			$("#cbxProducto").selectpicker()
+		}
+	})
+}
+listarComboProducto()
+
+function listarComboProducto2(chxid){
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/listarComboProducto',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			
+			var datos = JSON.parse(data)
+			$.each(datos, function(i, item){
+				$("#cbxProducto"+chxid).append(
+					'<option value="' + item.ProductoId + '">' + item.nombreProducto +'</option>'
+				)
+			})
+			$("#cbxProducto"+chxid).selectpicker()
+		}
+	})
+}
+
+function cancelar(){
+    $("#guardarReceta").attr('onclick', 'guardar()')
+    $("#RecetaId").val('');
+    $("#IngredienteId").val('');    
+	$("#nombre").val('');
+    $("#descripcion").val('');
+    $("#tiporeceta").val('default').selectpicker("refresh");
+    $("#cbxProducto").val('default').selectpicker("refresh");  
+    $("#Subreceta").val('default').selectpicker("refresh");
+    $("#cantidad").val('');
+    $("#costoPorcion").val('');
+    $("#costoPreparacion").val('');
+    $("#Si").prop('checked', false);
+    $("#No").prop('checked', true);
+    $('[name="inlineRadioOptions"]').change();
+    limpiar('fila');
+}
+
+function limpiar(fila) {
+    $("."+fila).remove();
+}
+
+function guardar() {
+    var nombreReceta = $("#nombre").val();
+    var descripcion = $("#descripcion").val();
+    var tiporeceta = $("#tiporeceta").val();
+    var producto = $("#cbxProducto").val();
+    var cantidadPorcion = $("#cantidad").val();
+    var costo = $("#costoPorcion").val();
+    var costoPreparacion = $("#costoPreparacion").val();
+
+    var arrayproducto = []
+	$("#contenedorIngredientes select[name=cbxProducto]").each(function(){
+		arrayproducto.push($(this).val())
+    })
+    
+    var arraycantidadPorcion = []
+	$("#contenedorIngredientes input[name=cantidad]").each(function(){
+		arraycantidadPorcion.push($(this).val())
+    })
+    
+    var arraycosto = []
+	$("#contenedorIngredientes input[name=costoPorcion]").each(function(){
+		arraycosto.push($(this).val())
+    })
+    
+    var arraycostoPreparacion = []
+	$("#contenedorIngredientes input[name=costoPreparacion]").each(function(){
+		arraycostoPreparacion.push($(this).val())
+	})
+
+    if(nombreReceta === ''){
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite el nombre de la receta"
+          });
+    
+    } 
+    else if(tiporeceta === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el tipo de receta"
+          });
+    } 
+    else if(producto === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el Producto"
+          });
+    }
+    else if(cantidadPorcion === '') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite la Cantidad de la porcion"
+          });
+    }
+    else{
+        $.ajax({
+            url: rutaUniversal + 'Receta_controllers/guardar',
+            type: 'POST',
+            data: {
+                'nombre':nombreReceta, 'descripcion':descripcion, 'tiporeceta':tiporeceta, 
+                'cbxProducto':arrayproducto, 'cantidad':arraycantidadPorcion, 'costoPorcion':arraycosto, 
+                'costoPreparacion':arraycostoPreparacion
+            },
+            success: function (data) {
+                if (data) {
+                    console.log(data)
+                    $.growl.notice({
+                        title: "Exito!",
+                        message: "Receta guardada correctamente"
+                      });
+                      $("#tbodyReceta").html('')
+                      $("#nombre").val('');
+                      $("#descripcion").val('');
+                      $("#tiporeceta").val('default').selectpicker("refresh");
+                      $("#cbxProducto").val('default').selectpicker("refresh");
+                      $("#cantidad").val('');
+                      $("#costoPorcion").val('');
+                      $("#costoPreparacion").val('');
+                      limpiar('fila');
+    
+                } else {
+                    $.growl.notice({
+                        title: "Atención!",
+                        message: "Ocurrio un error"
+                      });
+                }
+            },complete:function(){
+				ListarReceta()
+			}
+        })
+    }
+}
+
+function ListarReceta(){
+	var cont = 0
+	var estadoReceta
+	var classBtn
+	$.ajax({
+		url: rutaUniversal + 'Receta_controllers/ListarReceta',
+		type:'POST',
+		cache:false,
+		success:function(data){
+			var tabla = JSON.parse(data);
+			$.each(tabla, function(i, item){
+				// Validar estado del Receta
+				if (item.estado == 0){
+					estadoReceta = 'Deshabilitar(\'' + item.RecetaId + '\')'
+					classBtn = ' palette-Green'
+				}else{
+					if (item.estado == 1) {
+						estadoReceta = 'Habilitar(\'' + item.RecetaId + '\')'
+						classBtn = ' palette-Orange'
+					}
+				}
+				cont++
+				$("#tbodyReceta").append(
+					'<tr>'+
+					'<td>' + cont + '</td>' +
+					'<td>' + item.nombreReceta +'</td>'+
+					'<td>' + item.Descripcion +'</td>' +
+					'<td>' + item.TipoReceta +'</td>' +
+					'<td>'+
+					'<button type="button" class="btn palette-Light-Blue bg" onclick="PasarParamVen(\'' + item.IngredienteId + '\', \'' + item.RecetaId + '\', \'' + item.nombreReceta + '\', \'' + item.Descripcion + '\', \'' + item.TipoRecetaId + '\', \'' + item.ProductoId + '\', \'' + item.Cantidad + '\', \'' + item.CostoPorcion + '\', \'' + item.CostoPreparacion + '\',)"><i class="zmdi zmdi-account"></i></button>'+
+					'<button type="button" class="btn ' + classBtn +' bg" onclick="' + estadoReceta +'"><i class="zmdi zmdi-account"></i></button>' +
+					'</td>' +
+					'</tr>'
+				)
+			})
+		}
+	})
+}
+
+ListarReceta()
+
+function PasarParamVen(IngredienteId, RecetaId, nombreReceta, Descripcion, TipoRecetaId, ProductoId, Cantidad, CostoPorcion, CostoPreparacion){
+    $("#IngredienteId").val(IngredienteId);
+    $("#RecetaId").val(RecetaId);
+    $("#nombre").val(nombreReceta);
+    $("#descripcion").val(Descripcion);
+    $("#tiporeceta").val(TipoRecetaId).selectpicker("refresh");
+    $("#cbxProducto").val(ProductoId).selectpicker("refresh");
+    $("#cantidad").val(Cantidad);
+    $("#costoPorcion").val(CostoPorcion);
+    $("#costoPreparacion").val(CostoPreparacion);
+	$("#guardarReceta").attr('onclick','EditarReceta()')
+	$("#nombre").focus()
+}
+
+function EditarReceta(){
+    var nombreReceta = $("#nombre").val();
+    var descripcion = $("#descripcion").val();
+    var tiporeceta = $("#tiporeceta").val();
+    var producto = $("#cbxProducto").val();
+    var cantidadPorcion = $("#cantidad").val();
+    var costo = $("#costoPorcion").val();
+    var costoPreparacion = $("#costoPreparacion").val();
+
+	if(nombreReceta === ''){
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite el nombre de la receta"
+          });
+    
+    } 
+    else if(tiporeceta === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el tipo de receta"
+          });
+    } 
+    else if(producto === '0') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Seleccione el Producto"
+          });
+    }
+    else if(cantidadPorcion === '') {
+        $.growl.error({
+            title: "Atención!",
+            message: "Digite la Cantidad de la porcion"
+          });
+    }
+    else{
+        $.ajax({
+            url: rutaUniversal + 'Receta_controllers/EditarReceta',
+            type: 'POST',
+            data: $("#registroRecetas").serialize(),
+            success: function (data) {
+                if (data) {
+                    $.growl.notice({
+                        title: "Exito!",
+                        message: "Receta Actualizada con Exito"
+                    });
+                    $("#tbodyReceta").html('')
+                    $("#nombre").val('');
+                    $("#descripcion").val('');
+                    $("#tiporeceta").val('default').selectpicker("refresh");
+                    $("#cbxProducto").val('default').selectpicker("refresh");
+                    $("#cantidad").val('');
+                    $("#costoPorcion").val('');
+                    $("#costoPreparacion").val('');
+                    $("#guardarReceta").attr('onclick','guardar()')
+    
+                } else {
+                    $.growl.notice({
+                        title: "Atención!",
+                        message: "Ocurrio un error"
+                      });
+                }
+            },complete:function(){
+				ListarReceta()
+			}
+        })
+    }
+}

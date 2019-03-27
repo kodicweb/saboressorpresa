@@ -1,0 +1,19 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Proveedor_controllers extends CI_Controller
+{
+	function __Construct()
+	{
+		parent::__Construct();
+		$this->load->Model('Model_menu');
+		$this->load->Model('Model_proveedor');
+	}
+
+	public function listarComboProveedor()
+	{
+		$data = $this->Model_equipo->listarComboProveedor();
+		echo json_encode($data);
+	}
+
+}

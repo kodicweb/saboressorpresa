@@ -1,0 +1,115 @@
+<div class="c-header">
+    <h2>Registro de Clientes</h2>
+</div>
+<form id="registroClientes" role="form" data-toggle="validator">
+<div class="card">
+    <div class="card-body card-padding">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                    <div class="fg-line">
+                        <input type="text" name="NombreCliente" id="NombreCliente" class="form-control cobligatorio" placeholder="Primer Nombre" onkeyup="QuitarErrorCampo('NombreCliente')">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                    <div class="fg-line">
+                        <input type="text" name="SegundoNombre" id="SegundoNombre" class="form-control" placeholder="Seguhndo Nombre">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
+                    <div class="fg-line">
+                        <input type="text" name="ApePaterno" id="ApePaterno" class="form-control cobligatorio" placeholder="Primer Apellido" onkeyup="QuitarErrorCampo('ApePaterno')">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-email"></i></span>
+                    <div class="fg-line">
+                        <input type="text" name="ApeMaterno" id="ApeMaterno" class="form-control cobligatorio" placeholder="Segundo Apellido" onkeyup="QuitarErrorCampo('ApeMaterno')">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                    <div class="fg-line">
+                        <input type="number" name="Identificacion" id="Identificacion" class="form-control cobligatorio" placeholder="Identificacion" onkeyup="QuitarErrorCampo('Identificacion')">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+                    <input type="text" name="FechaNac" id="FechaNac" class="form-control" placeholder="Fecha de Nacimiento">
+                </div>
+            </div>
+           
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                    <div class="fg-line">
+                        <input type="text" name="Direccion" id="Direccion" class="form-control" placeholder="Direccion">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                    <div class="fg-line">
+                        <input type="number" name="Telefono" id="Telefono" class="form-control" placeholder="Telefono">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                    <div class="fg-line">
+                        <input type="email" name="Correo" id="Correo" class="form-control" placeholder="Correo">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 m-t-20">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="zmdi zmdi-key zmdi-hc-fw"></i></span>
+                    <div class="fg-line">
+                        <input type="number" name="Celular" id="Celular" class="form-control" placeholder="Celular">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <div class="card-body card-padding">
+            <div class="row">
+                
+                <div class="col-sm-12">
+                    <div class="btn-colors btn-demo" style="float:right !important;">
+                        <button type="button" class="btn palette-Red bg" 	onclick="cancelar()">Cancelar</button>		
+                        <button type="button" class="btn palette-Blue bg" onclick="guardar()">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div>
+</form>
+
+<script> 
+    var baseurl = "<?php echo base_url(); ?>"
+</script>
+
+<script src="<?php echo base_url(); ?>assets/js/Datos/Cliente/Cliente.js"></script>
+

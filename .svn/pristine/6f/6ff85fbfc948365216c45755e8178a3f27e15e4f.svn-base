@@ -1,0 +1,19 @@
+<?php
+
+class Model_unidadmedida extends CI_Model
+{
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	}
+
+	public function listarComboUnidadmedida()
+	{
+		$this->db->select('unidadId as idunidadmedida, Nombre as nombreUnidadmedida, Sigla as siglaUnidadMedida');
+		$this->db->from('unidadmedida');
+		$this->db->where('eliminado', 0);
+		$datos = $this->db->get();
+		return $datos->result();
+	}
+}
