@@ -53,44 +53,15 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="modalNarrower" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="modalNarrower" tabindex="-1" role="dialog" aria-hidden="true" style="margin-top: 9% !important;">
                 <div class="modal-dialog modal-md ">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title">Lista de SubRecetas</h4>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                            <div class="col-sm-6">
-                                <div class="col-sm-8" style="padding: 0px !important;">
-                                    <label class="checkbox checkbox-inline m-r-20">
-                                        <input type="checkbox" value="option1">
-                                        <i class="input-helper"></i>
-                                       galletas de chispitas
-                                    </label>
-                                </div>
-                                <div class="col-sm-4">	
-                                    <div class="fg-line ">
-                                        <input type="number" name="" class="form-control " placeholder="Cant" style="margin-top: -8px;">
-                                    </div>
-                                </div>
-                            
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="col-sm-8" style="padding: 0px !important;">
-                                    <label class="checkbox checkbox-inline m-r-20">
-                                        <input type="checkbox" value="option1">
-                                        <i class="input-helper"></i>
-                                        chispas de chocolate
-                                    </label>
-                                </div>
-                                <div class="col-sm-4">	
-                                    <div class="fg-line ">
-                                        <input type="number" name="" class="form-control " placeholder="Cant" style="margin-top: -8px;">
-                                    </div>
-                                </div>
-                            </div>
-                            
+                            <div class="row" id="listasubr">
+    
                             </div>
                         </div>
                         <div class="modal-footer">

@@ -27,12 +27,34 @@ function listarComboSubReceta(){
 		success:function(data){
 			
 			var datos = JSON.parse(data)
+			// $.each(datos, function(i, item){
+			// 	$("#Subreceta").append(
+			// 		'<option costouni="'+ item.CostoTotal +'" value="' + item.RecetaId + '">' + item.nombreReceta +'</option>'
+			// 	)
+			// })
+			// $("#Subreceta").selectpicker()
+			
 			$.each(datos, function(i, item){
-				$("#Subreceta").append(
-					'<option costouni="'+ item.CostoTotal +'" value="' + item.RecetaId + '">' + item.nombreReceta +'</option>'
+				$("#listasubr").append(
+					
+					//'<option costouni="'+ item.CostoTotal +'" value="' + item.RecetaId + '">' + item.nombreReceta +'</option>'+
+					'<div class="col-sm-6">'+
+						'<div class="col-sm-8" style="padding: 0px !important;">'+
+							'<label class="checkbox checkbox-inline m-r-20">'+
+								'<input type="checkbox" value="option1">'+
+								'<i class="input-helper"></i>'+
+								  item.nombreReceta +
+							'</label>'+
+						'</div>'+
+						'<div class="col-sm-4">'	+
+							'<div class="fg-line ">'+
+								'<input type="number" name="" class="form-control " placeholder="Cant" style="margin-top: -8px;">'+
+							'</div>'+
+						'</div>'+
+					'</div>'
 				)
 			})
-			$("#Subreceta").selectpicker()
+
 		}
 	})
 }
